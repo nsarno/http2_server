@@ -1,5 +1,5 @@
 defmodule Http2Server.Server do
-  alias Http2Server.Connection, as: Connection
+  alias Http2Server.Preface
   require Logger
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Http2Server.Server do
   def accept(port) do
     {:ok, socket} = :gen_tcp.listen(port, [
       :binary,
-      packet: :line,
+      packet: :raw,
       active: false,
       reuseaddr: true
     ])
@@ -29,16 +29,6 @@ defmodule Http2Server.Server do
   defp serve(socket) do
     Logger.info "Serving client socket"
     socket
-    |> Connection.preface()
-    serve(socket)
-  end
-
-  defp read_line(socket) do
-    {:ok, data} = :gen_tcp.recv(socket, 0)
-    data
-  end
-
-  defp write_line(socket, line) do
-    :gen_tcp.send(socket, line)
+    |> Preface.validate()
   end
 end

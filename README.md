@@ -1,6 +1,5 @@
-# Http2Server
-
-**TODO: Add description**
+# http2_server
+HTTP/2 server in Elixir
 
 ## Installation
 
